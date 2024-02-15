@@ -1,0 +1,12 @@
+{
+    "data_dir": "/home/dataset/snm3c/250k/raw",
+    "mode": "compartment",
+    "group": "compartment_raw",
+    "input_channels": 1,
+    "output_channels": 8,
+    "epochs": 120,
+    "batch_size": 16,
+    "lr": 0.001,
+    "chrom_list": ["chr1","chr2"],
+    "smote":true
+  }

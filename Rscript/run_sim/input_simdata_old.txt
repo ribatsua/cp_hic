@@ -1,0 +1,6 @@
+mean0.25
+mean0.3
+mean0.5
+mean2
+mean3
+mean4
