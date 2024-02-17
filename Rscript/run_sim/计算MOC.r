@@ -56,10 +56,32 @@ get_continuous_intervals <- function(data, condition_column,comparison_operator,
   return(intervals)
 }
 
+#测试
+# parameter <- 'mean0.5'
+# file_path <- paste0('/home/dataset/sim_data/cellcycle/1m/res/', parameter, '_manhattan.csv')
 
+# # 读取CSV文件
+# test_res <- fread(file_path)
+# sim_data<-fread('/home/dataset/sim_data/cellcycle/1m/compartment_raw_0_1171.csv_mean4.csv')
+# #预测的差异区间
+# pre_dc<-get_continuous_intervals(test_res, "effect_size",">",0.16)
+# #真实差异区间
+# sim_data$is_dc <- sapply(sim_data$datalabel, function(x) ifelse(x %in% c('wd', 'vd'), 1, 0))
+
+# real_dc<-get_continuous_intervals(sim_data, "is_dc","==",1)
+# # print(sim_data$is_dc)
+# result <- moc(real_dc,pre_dc)
+# print(result)
+# a<-real_dc
+
+# b<-pre_dc
+
+
+# print(real_dc)
+# print(pre_dc)
 
 # 测试
-parameter <- 'mean0.5'
+parameter <- 'mean4'
 file_path <- paste0('/home/dataset/sim_data/cellcycle/250k/res/', parameter, '_manhattan.csv')
 
 # 读取CSV文件
@@ -67,10 +89,59 @@ test_res <- fread(file_path)
 result_intervals <- get_continuous_intervals(test_res, "is_dc","==",1)
 pre_dc<-get_continuous_intervals(test_res, "effect_size",">",0.16)
 # 输出结果
-# print(result_intervals)
-# print(pre_dc)
 result <- moc(result_intervals,pre_dc)
 print(result)
+a<-result_intervals
+
+b<-pre_dc
+#########区间可视化
+
+
+#  提取所有区间的起始点和终止点
+all_points <- unlist(c(a, b))
+
+# 获取图形的坐标范围
+x_min <- min(all_points)
+x_max <- max(all_points)
+y_min <- 0
+y_max <- 1
+
+# 设置PNG文件路径
+png_file_path <- "./overlap_plot.png"
+
+# 创建一个空白的绘图区域，并保存为PNG
+png(png_file_path, width = 800, height = 400)
+plot(0, xlim = c(x_min, x_max), ylim = c(y_min, y_max), type = "n", xlab = "Position", ylab = "", main = "Overlap of Intervals")
+
+# 添加第一组区间
+for (i in 1:length(a)) {
+  rect(a[[i]][1], 0.5, a[[i]][2], 0.6, col = "blue", border = NA)
+}
+
+# 添加第二组区间
+for (i in 1:length(b)) {
+  rect(b[[i]][1], 0.4, b[[i]][2], 0.5, col = "red", border = NA)
+}
+
+# 添加图例
+legend("topright", legend = c("real_dc", "pre_dc"), fill = c("blue", "red"))
+
+text(mean(c(max(sapply(a, max)), min(sapply(b, min)))), 0.8, labels = paste("MOC: ", result), col = "black", cex = 1.2)
+
+# 关闭PNG设备
+dev.off()
+
+# 测试
+# parameter <- 'mean0.5'
+# file_path <- paste0('/home/dataset/sim_data/cellcycle/250k/res/', parameter, '_manhattan.csv')
+
+# # 读取CSV文件
+# test_res <- fread(file_path)
+# result_intervals <- get_continuous_intervals(test_res, "is_dc","==",1)
+# pre_dc<-get_continuous_intervals(test_res, "effect_size",">",0.16)
+# # 输出结果
+# result <- moc(result_intervals,pre_dc)
+# print(result)
 
 
 
